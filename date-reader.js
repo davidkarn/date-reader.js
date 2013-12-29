@@ -7,7 +7,7 @@ var date_regex_table = {
     'day-suffix': /(st|nd|rd|th)\b/i,
     'day-of-week': /([0-6])/,
     'day-of-year': /([0-9]|[1-9][0-9]|[1-2][0-9][0-9]|3[0-5][0-9]|36[0-5])/,
-    'month-full': /\b(January|February|March|April|June|July|August|September|October|November|December)\b/i,
+    'month-full': /\b(January|February|March|April|May|June|July|August|September|October|November|December)\b/i,
     'month-leading-zero': /(0[1-9]|1[0-2])/,
     'month-three-letters': /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/i,
     'month': /([1-9]|1[0-2])/,
@@ -30,8 +30,8 @@ var date_regex_table = {
     'gmt-difference': /(Z|[-+](?:[0-1][0-9]|2[0-3])[0-5][0-9])i/,
     'gmt-difference-colon': /(Z|[-+](?:[0-1][0-9]|2[0-3]):[0-5][0-9])/,
     'timezone-offset-seconds': /(-4[0-2][0-9][0-9][0-9]|-43[0-2][0-9][0-9]|-[0-3][0-9][0-9][0-9][0-9]|50[0-3][0-9][0-9]|50400|[0-4][0-9][0-9][0-9][0-9])/,
-    'unix-time': /\b([0-9]{1,10})\b/,
-    'unix-time-full': /^([0-9]{1,10})$/};
+    'unix-time': /\b([0-9]{10,10})\b/,
+    'unix-time-full': /^([0-9]{10,10})$/};
 
 var date_format_table = [
     {label: 'iso-8601-date-time-seconds-tenth-second-timezone', format: ['iso-8601-year', "-", 'month-leading-zero', "-", 'day-leading-zero', "T", '24-hour-leading-zero', ":", 'minute-leading-zero', ":", 'second-leading-zero', ".", 'tenth-second', 'gmt-difference-colon']},
@@ -93,7 +93,7 @@ function parse_date_format(string, format) {
     return false; }
 
 function slots_to_date(parsed_slots) {
-    }
+    
 
 function read_date(string, formats) {
     var parsed_slots = {};
@@ -109,10 +109,43 @@ function read_date(string, formats) {
 	for (var i in slots) {
 	    parsed_slots[i] = slots[i]; }});
     return slots_to_date(parsed_slots); }
-    
 
-(define *srfi-19-fields*
-  `((nanosecond
+
+function return_false() {
+    return false; }
+
+function returner(x) { return x; }
+
+function parse_month(string) {
+}
+
+var date_translation_table = {
+    'day-leading-zero': {slot: 'day', parser: parseInt},
+    'day': {slot: 'day', parser: parseInt},
+    'day-of-year': {slot: 'day_of_year', parser: parseInt},
+    'month-full': {slot: 'month', parser: parse_month},
+    'month-leading-zero': {slot: 'month', parser: parseInt},
+    'month-three-letters': {slot: 'month', parser: parse_month},
+    'month': {slot: 'month', parser: parseInt},
+    'iso-8601-year': {slot: 'year', parser: parseInt},
+    'year': {slot: 'year', parser: parseInt},
+    'year-two-digit': {slot: 'year', parser: parse_year},
+    'am-pm': {slot: 'am_pm', parser: returner},
+    'hour': {slot: 'hour', parser: parseInt},
+    '24-hour': {slot: 'hour', parser: parseInt},
+    'hour-leading-zero': {slot: 'hour', parser: parseInt},
+    '24-hour-leading-zero': {slot: 'hour', parser: parseInt},
+    'minute-leading-zero': {slot: 'minute', parser: parseInt},
+    'second-leading-zero': {slot: 'second', parser: parseInt},
+    'tenth-second': {slot: 'tenth_second', parser: parseInt},
+    'timezone-abr': {slot: 'timezone', parser: parse_timezone},
+    'gmt-difference': {slot: 'timezone', parser: parse_gmt},
+    'gmt-difference-colon': {slot: 'timezone', parser: parse_gmt},
+    'timezone-offset-seconds': {slot: 'timezone', parser: parse_tz_offset_seconds},
+    'unix-time': {slot: 'unix', parser: parse_unix},
+    'unix-time-full': {slot: 'unix', parser: parse_unix}};
+
+((nanosecond
      (tenth-second ,(lambda (x) (* x 100000))))
     (second
      (second-leading-zero ,string->number))(define *date-symbols*
