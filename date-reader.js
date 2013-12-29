@@ -162,33 +162,33 @@ var date_translation_table = {
     'timezone-abr': {slot: 'timezone', parser: parse_timezone},
     'gmt-difference': {slot: 'timezone', parser: parse_gmt},
     'gmt-difference-colon': {slot: 'timezone', parser: parse_gmt},
-    'timezone-offset-seconds': {slot: 'timezone', parser: parse_tz_offset_seconds},
-    'unix-time': {slot: 'unix', parser: parse_unix},
-    'unix-time-full': {slot: 'unix', parser: parse_unix}};var date_translation_table = {
-    'day-leading-zero': {slot: 'day', parser: parseInt},
-    'day': {slot: 'day', parser: parseInt},
-    'day-of-year': {slot: 'day_of_year', parser: parseInt},
-    'month-full': {slot: 'month', parser: parse_month},
-    'month-leading-zero': {slot: 'month', parser: parseInt},
-    'month-three-letters': {slot: 'month', parser: parse_month},
-    'month': {slot: 'month', parser: parseInt},
-    'iso-8601-year': {slot: 'year', parser: parseInt},
-    'year': {slot: 'year', parser: parseInt},
-    'year-two-digit': {slot: 'year', parser: parse_year},
-    'am-pm': {slot: 'am_pm', parser: returner},
-    'hour': {slot: 'hour', parser: parseInt},
-    '24-hour': {slot: 'hour', parser: parseInt},
-    'hour-leading-zero': {slot: 'hour', parser: parseInt},
-    '24-hour-leading-zero': {slot: 'hour', parser: parseInt},
-    'minute-leading-zero': {slot: 'minute', parser: parseInt},
-    'second-leading-zero': {slot: 'second', parser: parseInt},
-    'tenth-second': {slot: 'tenth_second', parser: parseInt},
-    'timezone-abr': {slot: 'timezone', parser: parse_timezone},
-    'gmt-difference': {slot: 'timezone', parser: parse_gmt},
-    'gmt-difference-colon': {slot: 'timezone', parser: parse_gmt},
     'timezone-offset-seconds': {slot: 'timezone', parser: parseInt},
+    'leap-year?': {slot: 'leap-year', parser: parseInt},
     'unix-time': {slot: 'unix', parser: parseInt},
     'unix-time-full': {slot: 'unix', parser: parseInt}};
+
+var seconds_translation_table = {
+    day: function(x) { return x * 60 * 60 * 24; },
+    day_of_year: function (x) { return x * 60 * 60 * 24; },
+    month: function(month, slots) {
+	var months = [31, ((slots.year % 4) == 0 ? 29 : 28), 31, 30, 30, 31, 31, 30, 30, 31];
+	var days = 0;
+	for (var i = 1; i < month; i++) {
+	    days += months[i - 1]; }
+	return days * 60 * 60 * 24; },
+    year: function(x) { 
+	var leapdays = Math.floor(Math.abs(x - 1970) / 4) * 60 * 60 * 24;
+	if (x - 1970 < 0) {
+	    leapdays = 0 - leapdays; }
+	return (((x - 1970) * 60 * 60 * 24 * 365)
+		+ leapdays); },
+    am_pm: function(x) { return (x.toLowerCase() == 'pm' ? (12 * 60 * 60) : 0); },
+    hour: function(x) { return x * 60; },
+    minute: function(x) { return x * 60; },
+    second: returner,
+    tenth_second: function(x) { return x * 0.1; },
+    timezone: returner,
+    unix: returner}
 
 ((nanosecond
      (tenth-second ,(lambda (x) (* x 100000))))
