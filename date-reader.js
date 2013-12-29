@@ -92,7 +92,18 @@ function parse_date_format(string, format) {
 	    return full_match; }}
     return false; }
 
-function slots_to_date(parsed_slots) {}
+function slots_to_date(parsed_slots) {
+    var translated_slots = {};
+    for (var key in parsed_slots) {
+	var trans = date_translation_table[key];
+	if (trans) {
+	    translated_slots[trans.slot] = trans.parser(parsed_slots[key]); } }
+    var seconds = 0;
+    for (var key in translated_slots) {
+	fn = seconds_translation_table[key];
+	if (fn) {
+	    seconds += fn(translated_slots[key], translated_slots); }}
+    return new Date(seconds * 1000); }
     
 
 function read_date(string, formats) {
