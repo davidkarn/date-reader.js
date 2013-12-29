@@ -92,10 +92,23 @@ function parse_date_format(string, format) {
 	    return full_match; }}
     return false; }
 
-function read_date(string, parsed, formats) {
-    parsed = parsed || [];
+function slots_to_date(parsed_slots) {
+    }
+
+function read_date(string, formats) {
+    var parsed_slots = {};
+    var parsed = [];
     formats = formats || date_format_table;
-    
+    if (formats.length == 0) {
+	return false; }
+    for (var i in formats) {
+	var format = formats[i].format;
+	parsed.push(parse_date_format(string, format)); }
+    parsed = parsed.filter(function(x) { return x; });
+    parsed.reverse().each(function(slots) {
+	for (var i in slots) {
+	    parsed_slots[i] = slots[i]; }});
+    return slots_to_date(parsed_slots); }
     
 
 (define *srfi-19-fields*
