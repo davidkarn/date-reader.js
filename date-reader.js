@@ -55,11 +55,42 @@ var date_format_table = [
     {label: 'timezone-abr', format: ['timezone-abr']},
     {label: 'unix-time', format: ['unix-time-full']}};
 
-function parse_date_format(string, format) {
-    
+// given a string and a regexp, return all slices of string beginning with a match of regexp
+
+function all_matched_slices(string, regexp) {
+    var slices = [];
+    while (var pos = string.search(regexp)) {
+	slices.push(string.slice(pos)); 
+	string = string.slice(pos+1); }
+    return slices; }
+
+function match_date_format(string, format) {
+    var matched_slots = {};
     for (var i in format) {
-	var f = format[i];
-	
+	var chunk = format[i];
+	if (date_regexp_table[chunk]) {
+	    var regexp = new RegExp("^"+date_regexp_table[chunk].source, 'im');
+	    var match = string.match(regexp);
+	    if (!match) {
+		return false; }
+	    matched_slots[chunk] = match;
+	    string = string.slice(match.length); }
+	else {
+	    if (string.search(chunk) !== 0) {
+		return false; }
+	    string = string.slice(chunk.length); }}
+    return matched_slots; }
+
+function parse_date_format(string, format) {    
+    var first_regexp = date_regexp_table[format[0]];
+    var matches = all_matched_slices(string, first_regexp);
+    if (matches.length == 0) {
+	return false; }
+    for (var i in matches) {
+	var full_match = match_date_format(matches[i], format);
+	if (full_match) {
+	    return full_match; }}
+    return false; }
 
 function read_date(string, parsed, formats) {
     parsed = parsed || [];
