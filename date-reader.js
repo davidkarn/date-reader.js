@@ -136,6 +136,7 @@ function parse_month(string) {
 
 function parse_year(string) {
     var year = parseInt(string);
+    if (year > 100) { return year; }
     if (year < 20) {
 	return 2000 + year; }
     return 1900 + year; }
@@ -145,9 +146,9 @@ function parse_timezone(string) {
     return parse_gmt(tz_table[string.toUpperCase()]); }
 
 function parse_gmt(string) {
-    var matches = string.match(/([-+])?([0-9]{2,2})?(:[0-9]{2,2})?/);
-    var minutes = matches[3] || 0;
-    var hours = matches[2] || 1;
+    var matches = string.match(/[a-zA-Z]*([-+])?([0-9]{2,2})?(:([0-9]{2,2}))?/);
+    var minutes = matches[4] || 0;
+    var hours = matches[2] || 0;
     var sign = matches[1] || '+';
     var seconds =  (minutes * 60) + (hours * 60 * 60);
     if (sign === '+') { return seconds; }
@@ -205,3 +206,8 @@ var seconds_translation_table = {
 
 exports.all_matched_slices = all_matched_slices;
 exports.match_date_format = match_date_format;
+exports.parse_date_format = parse_date_format;
+exports.parse_month = parse_month;
+exports.parse_year = parse_year;
+exports.parse_gmt = parse_gmt;
+exports.parse_timezone = parse_timezone;
