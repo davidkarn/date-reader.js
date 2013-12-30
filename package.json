@@ -4,7 +4,7 @@
   "description": "A small library for guessing date formats and automatically extracting Date objects from strings",
   "main": "date-reader.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/nodeunit tests.js"
   },
   "dependencies": {
       "nodeunit": "*" },

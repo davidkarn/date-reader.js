@@ -1,4 +1,4 @@
-var date_regex_table = {
+var date_regexp_table = {
     'day-leading-zero': /([0-2][0-9]|3[0-1])/,
     'day-three-letters': /\b(Sun|Mon|Tue|Wed|Thu|Fri|Sat)\b/i,
     'day': /([1-9]|[1-2][0-9]|3[0-1])/,
@@ -53,13 +53,14 @@ var date_format_table = [
     {label: 'month-year', format: ['month-three-letters', " ", 'year']},
     {label: 'month-year', format: ['month-full', " ", 'year']},
     {label: 'timezone-abr', format: ['timezone-abr']},
-    {label: 'unix-time', format: ['unix-time-full']}};
+    {label: 'unix-time', format: ['unix-time-full']}];
 
 // given a string and a regexp, return all slices of string beginning with a match of regexp
 
 function all_matched_slices(string, regexp) {
     var slices = [];
-    while (var pos = string.search(regexp)) {
+    var pos;
+    while ((pos = string.search(regexp)) >= 0) {
 	slices.push(string.slice(pos)); 
 	string = string.slice(pos+1); }
     return slices; }
@@ -73,6 +74,7 @@ function match_date_format(string, format) {
 	    var match = string.match(regexp);
 	    if (!match) {
 		return false; }
+	    match = match[0];
 	    matched_slots[chunk] = match;
 	    string = string.slice(match.length); }
 	else {
@@ -139,7 +141,7 @@ function parse_year(string) {
     return 1900 + year; }
 
 function parse_timezone(string) {
-    vat tz_table = {ACDT: '+10:30', ACST: '+09:30', ACT: '+08', ADT: '-03', AEDT: '+11', AEST: '+10', AFT: '+04:30', AKDT: '-08', AKST: '-09', AMST: '-03', AMST: '+05', AMT: '-04', AMT: '+04', ART: '-03', AST: '+03', AST: '-04', AWDT: '+09', AWST: '+08', AZOST: '-01', AZT: '+04', BDT: '+08', BIOT: '+06', BIT: '-12', BOT: '-04', BRT: '-03', BST: '+06', BST: '+01', BTT: '+06', CAT: '+02', CCT: '+06:30', CDT: '-05', CDT: '-04', CEDT: '+02', CEST: '+02', CET: '+01', CHADT: '+13:45', CHAST: '+12:45', CHOT: '+08', ChST: '+10', CHUT: '+10', CIST: '-08', CIT: '+08', CKT: '-10', CLST: '-03', CLT: '-04', COST: '-04', COT: '-05', CST: '-06', CST: '+08', CST: '+09:30', CST: '+10:30', CST: '-05', CT: '+08', CVT: '-01', CWST: '+08:45', CXT: '+07', DAVT: '+07', DDUT: '+10', DFT: '+01', EASST: '-05', EAST: '-06', EAT: '+03', ECT: '-04', ECT: '-05', EDT: '-04', EEDT: '+03', EEST: '+03', EET: '+02', EGST: '+00', EGT: '-01', EIT: '+09', EST: '-05', EST: '+10', FET: '+03', FJT: '+12', FKST: '-03', FKST: '-03', FKT: '-04', FNT: '-02', GALT: '-06', GAMT: '-09', GET: '+04', GFT: '-03', GILT: '+12', GIT: '-09', GMT: '', GST: '-02', GST: '+04', GYT: '-04', HADT: '-09', HAEC: '+02', HAST: '-10', HKT: '+08', HMT: '+05', HOVT: '+07', HST: '-10', ICT: '+07', IDT: '+03', IOT: '+03', IRDT: '+08', IRKT: '+09', IRST: '+03:30', IST: '+05:30', IST: '+01', IST: '+02', JST: '+09', KGT: '+06', KOST: '+11', KRAT: '+07', KST: '+09', LHST: '+10:30', LHST: '+11', LINT: '+14', MAGT: '+12', MART: '-09:30', MAWT: '+05', MDT: '-06', MET: '+01', MEST: '+02', MHT: '+12', MIST: '+11', MIT: '-09:30', MMT: '+06:30', MSK: '+04', MST: '+08', MST: '-07', MST: '+06:30', MUT: '+04', MVT: '+05', MYT: '+08', NCT: '+11', NDT: '-02:30', NFT: '+11:30', NPT: '+05:45', NST: '-03:30', NT: '-03:30', NUT: '-11', NZDT: '+13', NZST: '+12', OMST: '+07', ORAT: '+05', PDT: '-07', PET: '-05', PETT: '+12', PGT: '+10', PHOT: '+13', PHT: '+08', PKT: '+05', PMDT: '-02', PMST: '-03', PONT: '+11', PST: '-08', PYST: '-03', PYT: '-04', RET: '+04', ROTT: '-03', SAKT: '+11', SAMT: '+04', SAST: '+02', SBT: '+11', SCT: '+04', SGT: '+08', SLST: '+05:30', SRT: '-03', SST: '-11', SST: '+08', SYOT: '+03', TAHT: '-10', THA: '+07', TFT: '+05', TJT: '+05', TKT: '+14', TLT: '+09', TMT: '+05', TOT: '+13', TVT: '+12', UCT: '', ULAT: '+08', UTC: '', UYST: '-02', UYT: '-03', UZT: '+05', VET: '-04:30', VLAT: '+10', VOLT: '+04', VOST: '+06', VUT: '+11', WAKT: '+12', WAST: '+02', WAT: '+01', WEDT: '+01', WEST: '+01', WET: '', WST: '+08', YAKT: '+10', YEKT: '+06', Z: ''};
+    var tz_table = {ACDT: '+10:30', ACST: '+09:30', ACT: '+08', ADT: '-03', AEDT: '+11', AEST: '+10', AFT: '+04:30', AKDT: '-08', AKST: '-09', AMST: '-03', AMST: '+05', AMT: '-04', AMT: '+04', ART: '-03', AST: '+03', AST: '-04', AWDT: '+09', AWST: '+08', AZOST: '-01', AZT: '+04', BDT: '+08', BIOT: '+06', BIT: '-12', BOT: '-04', BRT: '-03', BST: '+06', BST: '+01', BTT: '+06', CAT: '+02', CCT: '+06:30', CDT: '-05', CDT: '-04', CEDT: '+02', CEST: '+02', CET: '+01', CHADT: '+13:45', CHAST: '+12:45', CHOT: '+08', ChST: '+10', CHUT: '+10', CIST: '-08', CIT: '+08', CKT: '-10', CLST: '-03', CLT: '-04', COST: '-04', COT: '-05', CST: '-06', CST: '+08', CST: '+09:30', CST: '+10:30', CST: '-05', CT: '+08', CVT: '-01', CWST: '+08:45', CXT: '+07', DAVT: '+07', DDUT: '+10', DFT: '+01', EASST: '-05', EAST: '-06', EAT: '+03', ECT: '-04', ECT: '-05', EDT: '-04', EEDT: '+03', EEST: '+03', EET: '+02', EGST: '+00', EGT: '-01', EIT: '+09', EST: '-05', EST: '+10', FET: '+03', FJT: '+12', FKST: '-03', FKST: '-03', FKT: '-04', FNT: '-02', GALT: '-06', GAMT: '-09', GET: '+04', GFT: '-03', GILT: '+12', GIT: '-09', GMT: '', GST: '-02', GST: '+04', GYT: '-04', HADT: '-09', HAEC: '+02', HAST: '-10', HKT: '+08', HMT: '+05', HOVT: '+07', HST: '-10', ICT: '+07', IDT: '+03', IOT: '+03', IRDT: '+08', IRKT: '+09', IRST: '+03:30', IST: '+05:30', IST: '+01', IST: '+02', JST: '+09', KGT: '+06', KOST: '+11', KRAT: '+07', KST: '+09', LHST: '+10:30', LHST: '+11', LINT: '+14', MAGT: '+12', MART: '-09:30', MAWT: '+05', MDT: '-06', MET: '+01', MEST: '+02', MHT: '+12', MIST: '+11', MIT: '-09:30', MMT: '+06:30', MSK: '+04', MST: '+08', MST: '-07', MST: '+06:30', MUT: '+04', MVT: '+05', MYT: '+08', NCT: '+11', NDT: '-02:30', NFT: '+11:30', NPT: '+05:45', NST: '-03:30', NT: '-03:30', NUT: '-11', NZDT: '+13', NZST: '+12', OMST: '+07', ORAT: '+05', PDT: '-07', PET: '-05', PETT: '+12', PGT: '+10', PHOT: '+13', PHT: '+08', PKT: '+05', PMDT: '-02', PMST: '-03', PONT: '+11', PST: '-08', PYST: '-03', PYT: '-04', RET: '+04', ROTT: '-03', SAKT: '+11', SAMT: '+04', SAST: '+02', SBT: '+11', SCT: '+04', SGT: '+08', SLST: '+05:30', SRT: '-03', SST: '-11', SST: '+08', SYOT: '+03', TAHT: '-10', THA: '+07', TFT: '+05', TJT: '+05', TKT: '+14', TLT: '+09', TMT: '+05', TOT: '+13', TVT: '+12', UCT: '', ULAT: '+08', UTC: '', UYST: '-02', UYT: '-03', UZT: '+05', VET: '-04:30', VLAT: '+10', VOLT: '+04', VOST: '+06', VUT: '+11', WAKT: '+12', WAST: '+02', WAT: '+01', WEDT: '+01', WEST: '+01', WET: '', WST: '+08', YAKT: '+10', YEKT: '+06', Z: ''};
     return parse_gmt(tz_table[string.toUpperCase()]); }
 
 function parse_gmt(string) {
@@ -201,3 +203,5 @@ var seconds_translation_table = {
     timezone: returner,
     unix: returner}
 
+exports.all_matched_slices = all_matched_slices;
+exports.match_date_format = match_date_format;
