@@ -33,16 +33,21 @@ exports.parse_year = function(test) {
     test.done(); }
 
 exports.parse_gmt = function(test) {
-    test.equal(date_reader.parse_gmt("Z+03"), (3 * 60 * 60));
-    test.equal(date_reader.parse_gmt("Z-03"), (0 - (3 * 60 * 60)));
-    test.equal(date_reader.parse_gmt("Z-08:15"), (0 - (8 * 60 * 60)
-						  - (15 * 60)));
-    test.equal(date_reader.parse_gmt("Z+:15"), (15 * 60));
+    test.equal(date_reader.parse_gmt("Z+03"), 0 - (3 * 60 * 60));
+    test.equal(date_reader.parse_gmt("Z-03"), 0 - (0 - (3 * 60 * 60)));
+    test.equal(date_reader.parse_gmt("Z-08:15"), ((8 * 60 * 60)
+						  + (15 * 60)));
+    test.equal(date_reader.parse_gmt("Z+:15"), 0 - (15 * 60));
     test.done(); }
 
 exports.parse_timezone = function(test) {
-    test.equal(date_reader.parse_timezone("pst"), 0 - (8 * 60 * 60));
+    test.equal(date_reader.parse_timezone("pst"), (8 * 60 * 60));
     test.equal(date_reader.parse_timezone("UTC"), 0);
+    test.done(); }
+
+exports.read_date = function(test) {
+    test.deepEqual(date_reader.read_date("2013-01-24T12:22-08"), 
+	       new Date("2013-01-24T12:22:00.000-08:00"));
     test.done(); }
 
 
