@@ -1,0 +1,28 @@
+{
+  "name": "date-reader",
+  "version": "0.0.0",
+  "description": "A small library for guessing date formats and automatically extracting Date objects from strings",
+  "main": "date-reader.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+      "nodeunit": "*" },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/davidkarn/date-reader.js"
+  },
+  "keywords": [
+    "date",
+    "parse",
+    "read",
+    "time",
+    "datetime"
+  ],
+  "author": "David Karn",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/davidkarn/date-reader.js/issues"
+  },
+  "homepage": "https://github.com/davidkarn/date-reader.js"
+}
