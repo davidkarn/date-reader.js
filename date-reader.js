@@ -1,7 +1,7 @@
 var date_regexp_table = {
     'day-leading-zero': /([0-2][0-9]|3[0-1])/,
     'day-three-letters': /\b(Sun|Mon|Tue|Wed|Thu|Fri|Sat)\b/i,
-    'day': /([1-9]|[1-2][0-9]|3[0-1])/,
+    'day': /([0-2][0-9]|3[0-1]|[0-9])/,
     'day-full': /\b(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)\b/i,
     'iso-8601-day-of-week': /([1-7])/,
     'day-suffix': /(st|nd|rd|th)\b/i,
@@ -52,6 +52,9 @@ var date_format_table = [
     {label: 'day2', format: ['day-three-letters', ", ", 'day']},
     {label: 'month-year', format: ['month-three-letters', " ", 'year']},
     {label: 'month-year', format: ['month-full', " ", 'year']},
+    {label: 'year', format: ['year']},
+    {label: 'month-day', format: ['month-three-letters', " ", 'day']},
+    {label: 'month-day', format: ['month-full', " ", 'day']},
     {label: 'timezone-abr', format: ['timezone-abr']},
     {label: 'unix-time', format: ['unix-time-full']}];
 
@@ -124,8 +127,12 @@ var seconds_translation_table = {
 	for (var i = 1; i < month; i++) {
 	    days += months[i - 1]; }
 	return days * 60 * 60 * 24; },
-    year: function(x) { 
-	var leapdays = Math.floor(Math.abs(x - 1970) / 4) * 60 * 60 * 24;
+    year: function(x) {
+	var offset = x - 1972;
+	offset = offset - (offset % 4);
+	if ((x - 1972) % 4 == 0) {
+	    offset -= 1; }
+	var leapdays = (offset / 4) * 60 * 60 * 24;
 	if (x - 1970 < 0) {
 	    leapdays = 0 - leapdays; }
 	return (((x - 1970) * 60 * 60 * 24 * 365)
@@ -183,14 +190,21 @@ function slots_to_date(parsed_slots) {
 	var trans = date_translation_table[key];
 	if (trans) {
 	    translated_slots[trans.slot] = trans.parser(parsed_slots[key]); } }
+    translated_slots = fill_in_missing_slots(translated_slots);
     var seconds = 0;
     for (var key in translated_slots) {
 	fn = seconds_translation_table[key];
 	if (fn) {
 	    seconds += fn(translated_slots[key], translated_slots); }}
     return new Date(seconds * 1000); }
-    
 
+function fill_in_missing_slots(parsed_slots) {
+    var d = new Date();
+    parsed_slots.year = parsed_slots.year || d.getFullYear();
+    parsed_slots.month = parsed_slots.month || (d.getMonth() + 1);
+    parsed_slots.timezone = parsed_slots.timezone || (d.getTimezoneOffset() * 60); 
+    return parsed_slots; }
+    
 function read_date(string, formats) {
     var parsed_slots = {};
     var parsed = [];
