@@ -123,7 +123,6 @@ var seconds_translation_table = {
     month: function(month, slots) {
 	var months = [31, ((slots.year % 4) == 0 ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 	var days = 0;
-	console.log(month);
 	for (var i = 1; i < month; i++) {
 	    days += months[i - 1]; }
 	return days * 60 * 60 * 24; },
@@ -219,6 +218,7 @@ function read_date(string, formats) {
 	for (var i in slots) {
 	    parsed_slots[i] = slots[i]; }});
     return slots_to_date(parsed_slots); }
+
 
 exports.all_matched_slices = all_matched_slices;
 exports.match_date_format = match_date_format;

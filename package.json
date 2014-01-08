@@ -1,6 +1,6 @@
 {
   "name": "date-reader",
-  "version": "0.0.0",
+  "version": "0.0.2",
   "description": "A small library for guessing date formats and automatically extracting Date objects from strings",
   "main": "date-reader.js",
   "scripts": {
